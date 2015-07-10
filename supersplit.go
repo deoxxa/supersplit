@@ -1,4 +1,4 @@
-package supersplit
+package supersplit // import "fknsrs.biz/p/supersplit"
 
 import (
 	"strings"
