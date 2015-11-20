@@ -77,3 +77,35 @@ func TestAdjacentEscapeChars(t *testing.T) {
 
 	a.Equal([]string{"a\\", "b"}, bits)
 }
+
+func TestJoin(t *testing.T) {
+	a := assert.New(t)
+
+	s := Join([]string{"a", "b", "c"}, ",", "\\")
+
+	a.Equal("a,b,c", s)
+}
+
+func TestJoinEscapingSeparator(t *testing.T) {
+	a := assert.New(t)
+
+	s := Join([]string{"a,", "b,", "c,"}, ",", "\\")
+
+	a.Equal("a\\,,b\\,,c\\,", s)
+}
+
+func TestJoinEscapingEscape(t *testing.T) {
+	a := assert.New(t)
+
+	s := Join([]string{"a\\", "b\\", "c\\"}, ",", "\\")
+
+	a.Equal("a\\\\,b\\\\,c\\\\", s)
+}
+
+func TestJoinEscapingBoth(t *testing.T) {
+	a := assert.New(t)
+
+	s := Join([]string{"a\\,", "b\\,", "c\\,"}, ",", "\\")
+
+	a.Equal("a\\\\\\,,b\\\\\\,,c\\\\\\,", s)
+}

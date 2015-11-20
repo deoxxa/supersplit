@@ -43,3 +43,13 @@ func Escaped(s, sep, esc string) []string {
 
 	return r
 }
+
+func Join(a []string, sep, esc string) string {
+	r := make([]string, len(a))
+
+	for i, v := range a {
+		r[i] = strings.Replace(strings.Replace(v, esc, esc+esc, -1), sep, esc+sep, -1)
+	}
+
+	return strings.Join(r, sep)
+}
