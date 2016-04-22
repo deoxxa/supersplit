@@ -4,44 +4,56 @@ import (
 	"strings"
 )
 
+type state int
+
+const (
+	stateBase = iota
+	stateEscape
+)
+
 func Escaped(s, sep, esc string) []string {
-	var r []string
+	var escaping bool
 
-	o := 0
-	var bits []string
-	for {
-		if p := strings.Index(s[o:], esc); p != -1 {
-			if p != len(s[o:])-1 {
-				bits = append(bits, s[o:o+p], s[o+p+1:o+p+2])
+	var (
+		bits []string
+		bit  string
+	)
 
-				o += p + 2
+	for _, c := range s {
+		switch escaping {
+		case true:
+			switch string(c) {
+			case esc:
+				bit += esc
+			case sep:
+				bit += sep
+			default:
+				bit += esc + string(c)
+			}
 
-				continue
+			escaping = false
+		case false:
+			switch string(c) {
+			case esc:
+				escaping = true
+			case sep:
+				bits = append(bits, bit)
+				bit = ""
+			default:
+				bit += string(c)
 			}
 		}
-
-		if p := strings.Index(s[o:], sep); p != -1 {
-			r = append(r, strings.Join(append(bits, s[o:o+p]), ""))
-
-			bits = nil
-
-			o += p + 1
-
-			continue
-		}
-
-		break
 	}
 
-	if o < len(s) {
-		bits = append(bits, s[o:])
+	if escaping {
+		bit += esc
 	}
 
-	if len(bits) > 0 {
-		r = append(r, strings.Join(bits, ""))
+	if len(bit) > 0 {
+		bits = append(bits, bit)
 	}
 
-	return r
+	return bits
 }
 
 func Join(a []string, sep, esc string) string {
