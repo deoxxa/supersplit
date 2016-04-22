@@ -78,6 +78,22 @@ func TestAdjacentEscapeChars(t *testing.T) {
 	a.Equal([]string{"a\\", "b"}, bits)
 }
 
+func TestFalseEscapedChars(t *testing.T) {
+	a := assert.New(t)
+
+	bits := Escaped("a\\T,b\\F,c", ",", "\\")
+
+	a.Equal([]string{"a\\T", "b\\F", "c"}, bits)
+}
+
+func TestFalseEscapedCharsAndEscapedSplitChar(t *testing.T) {
+	a := assert.New(t)
+
+	bits := Escaped("a\\T,b\\F\\,c", ",", "\\")
+
+	a.Equal([]string{"a\\T", "b\\F,c"}, bits)
+}
+
 func TestJoin(t *testing.T) {
 	a := assert.New(t)
 
